@@ -1049,7 +1049,7 @@ table.exp tr:last-child td{border-bottom:0}
 
     h += '<div class="card mt12"><div class="acct-line"><span class="k">주문 내역</span><span class="v">' +
       state.orders.filter(function (o) { return o.memberId === m.id; }).length + '건</span></div>' +
-      '<div class="acct-line"><span class="k">개인통관고유부호</span><span class="v">수입 통관에 사용돼요</span></div>' +
+      '<div class="acct-line"><span class="k">가입일</span><span class="v">' + fmtDate(m.requestedAt) + '</span></div>' +
       '<p class="note mt8">정보를 바꾸고 싶으시면 사장님께 카카오톡으로 말씀해 주세요.</p></div>';
 
     h += '<button type="button" class="btn ghost block mt16" data-act="logout">로그아웃</button>';
