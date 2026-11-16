@@ -526,14 +526,19 @@ table.exp tr:last-child td{border-bottom:0}
   };
   function badgeInfo(code) { return BADGE[code] || BADGE['']; }
 
+  function seedNo(d, seq) {
+    return 'C' + String(d.getFullYear()).slice(2) + pad2(d.getMonth() + 1) + pad2(d.getDate()) + '-' + pad2(seq);
+  }
   function seed() {
     var now = Date.now();
     var H = 3600 * 1000;
     var D = 24 * H;
     function iso(ms) { return new Date(now + ms).toISOString(); }
+    var dl2 = new Date(now + 2 * D);
+    dl2.setHours(23, 0, 0, 0);
     var rd2 = {
       id: 'rd_2', title: '11월 오사카 바잉 2차', memo: '난바 · 우메다 현지 픽업',
-      deadline: iso(38 * H), status: 'open', createdAt: iso(-2 * D)
+      deadline: dl2.toISOString(), status: 'open', createdAt: iso(-2 * D)
     };
     var rd1 = {
       id: 'rd_1', title: '11월 오사카 바잉 1차', memo: '도톤보리 · 신사이바시',
@@ -563,7 +568,7 @@ table.exp tr:last-child td{border-bottom:0}
     ];
     var orders = [
       {
-        id: 'od_seed1', no: 'C' + todayStr().slice(2, 4) + pad2(new Date().getMonth() + 1) + pad2(new Date().getDate()) + '-01',
+        id: 'od_seed1', no: seedNo(new Date(now - 2 * H), 1),
         memberId: 'mem_demo', roundId: 'rd_2',
         items: [
           { productId: 'pd_2', name: '스타벅스 컵홀더', option: '그린', qty: 2, price: 9900 },
@@ -574,7 +579,7 @@ table.exp tr:last-child td{border-bottom:0}
         logs: [{ status: 'unpaid', at: iso(-2 * H) }, { status: 'claim', at: iso(-1 * H) }]
       },
       {
-        id: 'od_seed2', no: 'C' + todayStr().slice(2, 4) + pad2(new Date().getMonth() + 1) + pad2(new Date().getDate()) + '-02',
+        id: 'od_seed2', no: seedNo(new Date(now - 26 * H), 1),
         memberId: 'mem_demo', roundId: 'rd_2',
         items: [{ productId: 'pd_3', name: '아라우 베이비 바디워시', option: '450ml', qty: 1, price: 15900 }],
         total: 15900, status: 'paid', depositor: '김서연', memo: '',
@@ -714,7 +719,7 @@ table.exp tr:last-child td{border-bottom:0}
   function maskPccc(p) {
     if (!p) return '—';
     if (p.length <= 6) return p;
-    return p.slice(0, 4) + '********' + p.slice(-2);
+    return p.slice(0, 3) + '********' + p.slice(-2);
   }
   function nextOrderNo() {
     var d = new Date();
@@ -1355,14 +1360,16 @@ table.exp tr:last-child td{border-bottom:0}
       return h;
     }
 
+    var PREV = [0, 1, 2, 4, 5, 6];
     h += '<div class="sechead"><h2>미리보기</h2><span class="cnt">' + (rows.length > 8 ? '8행 / 전체 ' + rows.length + '행' : rows.length + '행') + '</span></div>' +
       '<div class="tablewrap"><table class="exp"><thead><tr>' +
-      EXP_HEAD.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') +
+      PREV.map(function (i) { return '<th>' + esc(EXP_HEAD[i]) + '</th>'; }).join('') +
       '</tr></thead><tbody>' + rows.slice(0, 8).map(function (r) {
-        return '<tr>' + r.map(function (c, i) {
-          return '<td' + (i === 4 || i === 5 ? ' class="num"' : '') + '>' + esc(c) + '</td>';
+        return '<tr>' + PREV.map(function (i) {
+          return '<td' + (i === 4 || i === 5 ? ' class="num"' : '') + '>' + esc(r[i]) + '</td>';
         }).join('') + '</tr>';
-      }).join('') + '</tbody></table></div>';
+      }).join('') + '</tbody></table></div>' +
+      '<p class="note mt8">미리보기는 핵심 6개 열만 보여요. 내보내기에는 옵션·회차·주문번호·연락처까지 10개 열이 들어가요.</p>';
 
     h += '<div class="row mt12" style="gap:8px">' +
       '<button type="button" class="btn primary" style="flex:1" data-act="downCsv">CSV 다운로드</button>' +
