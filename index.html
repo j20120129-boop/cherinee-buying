@@ -1376,12 +1376,7 @@ table.exp tr:last-child td{border-bottom:0}
     var out = isSoldOut(p);
     var left = stockLeft(p);
     var st = stockState(p);
-    var pill = out
-      ? '<span class="pill st-unpaid">품절</span>'
-      : left === null
-        ? '<span class="pill st-closed">무제한</span>'
-        : '<span class="pill ' + (st === 'low' ? 'st-unpaid' : 'st-paid') + '">남은 ' + left + '개</span>';
-    var numTxt = left === null ? '무제한' : left + '개';
+    var numTxt = left === null ? '무제한' : (out ? left + '개 · 품절' : left + '개');
     return '<div class="ocard"><div class="row" style="gap:10px">' +
       '<img class="othumb" src="' + p.image + '" alt="">' +
       '<div style="flex:1;min-width:0">' +
@@ -1392,7 +1387,6 @@ table.exp tr:last-child td{border-bottom:0}
       '<div class="stkbar">' +
       '<span class="lab">재고</span>' +
       '<b class="stkval' + (st === 'out' ? ' out' : st === 'low' ? ' low' : '') + '">' + numTxt + '</b>' +
-      pill +
       (left === null
         ? '<button type="button" class="stkbtn" data-act="editProduct" data-id="' + p.id + '">수량 넣기</button>'
         : '<button type="button" class="stkbtn" data-act="stockAdj" data-id="' + p.id + '" data-d="-1" aria-label="재고 1개 줄이기">−</button>' +
